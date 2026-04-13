@@ -8,7 +8,7 @@ import type {
   VisitHistory,
 } from '@/lib/types'
 
-const prefix = '$env:NEXT_PUBLIC_API_URL/api/hospital'
+const prefix = `${process.env.NEXT_PUBLIC_API_URL}/api/hospital`
 
 async function parseError(res: Response): Promise<string> {
   try {

@@ -189,7 +189,7 @@ export default function AIReport() {
 
     // Get AI analysis
     try {
-      const response = await fetch('$env:NEXT_PUBLIC_API_URL/api/triage-analysis', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/triage-analysis`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

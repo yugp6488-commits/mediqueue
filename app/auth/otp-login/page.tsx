@@ -21,7 +21,7 @@ export default function OTPLoginPage() {
     setError(null)
 
     try {
-      const response = await fetch('$env:NEXT_PUBLIC_API_URL/api/auth/send-otp', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim().toLowerCase() }),
@@ -34,7 +34,7 @@ export default function OTPLoginPage() {
 
       const data = await response.json()
       console.log('✅ OTP sent successfully:', data)
-      
+
       // Redirect to verification page immediately
       const emailParam = encodeURIComponent(email.trim().toLowerCase())
       console.log('Redirecting to:', `/auth/otp-verify?email=${emailParam}`)
