@@ -50,7 +50,7 @@ export default function OTPVerifyPage() {
         throw new Error('Please enter a valid 6-digit code')
       }
 
-      const response = await fetch('http://localhost:5001/api/auth/verify-otp', {
+      const response = await fetch('$env:NEXT_PUBLIC_API_URL/api/auth/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, code }),
@@ -89,7 +89,7 @@ export default function OTPVerifyPage() {
     setIsLoading(true)
 
     try {
-      const response = await fetch('http://localhost:5001/api/auth/send-otp', {
+      const response = await fetch('$env:NEXT_PUBLIC_API_URL/api/auth/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
