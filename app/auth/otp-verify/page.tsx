@@ -32,6 +32,16 @@ function OTPVerifyContent() {
   const [timeLeft, setTimeLeft] = useState(600) // 10 minutes
   const [canResend, setCanResend] = useState(false)
 
+  const [deliveryNotice, setDeliveryNotice] = useState<string | null>(null)
+
+  useEffect(() => {
+    const stored = sessionStorage.getItem('otp_delivery_notice')
+    if (stored) {
+      setDeliveryNotice(stored)
+      sessionStorage.removeItem('otp_delivery_notice')
+    }
+  }, [])
+
   // Timer countdown
   useEffect(() => {
     if (timeLeft <= 0) {
@@ -81,13 +91,9 @@ function OTPVerifyContent() {
       localStorage.setItem('auth_token', data.auth_token)
       localStorage.setItem('user_email', email)
 
-      // Redirect to patient portal after showing success message
-      const redirectTimer = setTimeout(() => {
-        console.log('🚀 Redirecting to /patient')
+      setTimeout(() => {
         router.push('/patient')
       }, 1500)
-      
-      return () => clearTimeout(redirectTimer)
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Verification failed'
       console.error('❌ Verification error:', errorMsg)
@@ -110,6 +116,17 @@ function OTPVerifyContent() {
       if (!response.ok) {
         const data = await response.json()
         throw new Error(data.error || 'Failed to resend OTP')
+      }
+
+      const data = await response.json()
+      if (data.email_sent === false) {
+        setDeliveryNotice(
+          data.dev_hint ||
+            data.message ||
+            'The server could not confirm email delivery. Check spam/junk.',
+        )
+      } else {
+        setDeliveryNotice(null)
       }
 
       setTimeLeft(600)
@@ -176,6 +193,12 @@ function OTPVerifyContent() {
 
           <CardContent>
             <form onSubmit={handleVerifyOTP} className="space-y-6">
+              {deliveryNotice && (
+                <div className="flex items-start gap-3 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-950 dark:text-amber-100">
+                  <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
+                  <span>{deliveryNotice}</span>
+                </div>
+              )}
               {error && (
                 <div className="flex items-center gap-3 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
                   <AlertCircle className="h-4 w-4 flex-shrink-0" />

@@ -33,7 +33,16 @@ export default function OTPLoginPage() {
       }
 
       const data = await response.json()
-      console.log('✅ OTP sent successfully:', data)
+      console.log('OTP request result:', data)
+
+      if (data.email_sent === false) {
+        sessionStorage.setItem(
+          'otp_delivery_notice',
+          data.dev_hint || data.message || 'Email was not sent. Check server logs (dev) or mail settings.',
+        )
+      } else {
+        sessionStorage.removeItem('otp_delivery_notice')
+      }
 
       // Redirect to verification page immediately
       const emailParam = encodeURIComponent(email.trim().toLowerCase())
